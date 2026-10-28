@@ -26,7 +26,7 @@ app.use(async (req, res, next) => {
     await connectToDatabase();
     next();
   } catch (err) {
-    console.error('MongoDB connection error:', err.message);
+    console.error('MongoDB Atlas connection error:', err.message);
     res.status(500).json({ message: 'Database connection failed', error: err.message });
   }
 });
@@ -95,12 +95,12 @@ const protect = async (req, res, next) => {
 };
 
 // Health Check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({ status: 'ok', database: 'connected', timestamp: new Date().toISOString() });
 });
 
 // Register
-app.post('/api/auth/register', async (req, res) => {
+app.post(['/api/auth/register', '/auth/register'], async (req, res) => {
   try {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -112,7 +112,7 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ message: 'User already exists with this email address' });
     }
     const user = await User.create({ name: name.trim(), email: cleanEmail, password });
-    console.log(`✅ Successfully created user in Atlas: ${user.email} (${user._id})`);
+    console.log(`✅ Saved new user into Atlas: ${user.email} (${user._id})`);
     res.status(201).json({
       _id: user._id,
       name: user.name,
@@ -126,7 +126,7 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // Login
-app.post('/api/auth/login', async (req, res) => {
+app.post(['/api/auth/login', '/auth/login'], async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -150,7 +150,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Current User Profile
-app.get('/api/auth/me', protect, (req, res) => {
+app.get(['/api/auth/me', '/auth/me'], protect, (req, res) => {
   res.json({
     _id: req.user._id,
     name: req.user.name,
@@ -159,7 +159,7 @@ app.get('/api/auth/me', protect, (req, res) => {
 });
 
 // Get All Resumes
-app.get('/api/resumes', protect, async (req, res) => {
+app.get(['/api/resumes', '/resumes'], protect, async (req, res) => {
   try {
     const resumes = await Resume.find({ userId: req.user._id }).sort({ updatedAt: -1 });
     res.json(resumes);
@@ -169,7 +169,7 @@ app.get('/api/resumes', protect, async (req, res) => {
 });
 
 // Save / Create Resume
-app.post('/api/resumes', protect, async (req, res) => {
+app.post(['/api/resumes', '/resumes'], protect, async (req, res) => {
   try {
     const { title, data } = req.body;
     const resume = await Resume.create({
@@ -184,7 +184,7 @@ app.post('/api/resumes', protect, async (req, res) => {
 });
 
 // Update Resume
-app.put('/api/resumes/:id', protect, async (req, res) => {
+app.put(['/api/resumes/:id', '/resumes/:id'], protect, async (req, res) => {
   try {
     const resume = await Resume.findOne({ _id: req.params.id, userId: req.user._id });
     if (!resume) {
@@ -200,7 +200,7 @@ app.put('/api/resumes/:id', protect, async (req, res) => {
 });
 
 // Delete Resume
-app.delete('/api/resumes/:id', protect, async (req, res) => {
+app.delete(['/api/resumes/:id', '/resumes/:id'], protect, async (req, res) => {
   try {
     const resume = await Resume.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
     if (!resume) {
@@ -212,4 +212,6 @@ app.delete('/api/resumes/:id', protect, async (req, res) => {
   }
 });
 
-export default app;
+export default function handler(req, res) {
+  return app(req, res);
+}
