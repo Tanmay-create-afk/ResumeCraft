@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 let cachedConnection = null;
+
+const DEFAULT_MONGO_URI = 'mongodb://tanmayyawalkar3_db_user:dkE08MRqWr0Xenr7@ac-zx3aohw-shard-00-00.qhkt9lz.mongodb.net:27017,ac-zx3aohw-shard-00-01.qhkt9lz.mongodb.net:27017,ac-zx3aohw-shard-00-02.qhkt9lz.mongodb.net:27017/resumecraft?ssl=true&replicaSet=atlas-yyapov-shard-0&authSource=admin';
 
 const connectDB = async () => {
   // If already connected, reuse existing database connection (critical for Serverless/Vercel)
@@ -8,11 +12,7 @@ const connectDB = async () => {
     return cachedConnection;
   }
 
-  const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
-  if (!uri) {
-    console.error('❌ MONGO_URI is not defined in environment variables.');
-    throw new Error('Database connection string (MONGO_URI) is missing.');
-  }
+  const uri = process.env.MONGO_URI || process.env.MONGODB_URI || DEFAULT_MONGO_URI;
 
   try {
     cachedConnection = await mongoose.connect(uri, {
