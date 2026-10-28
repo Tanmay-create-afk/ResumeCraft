@@ -1,13 +1,13 @@
 # 📄 ResumeCraft — Executive AI Resume Builder & ATS Studio
 
 <p align="center">
-  <a href="https://resumecraft-sigma.vercel.app/" target="_blank">
-    <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-resumecraft--sigma.vercel.app-6366F1?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  <a href="https://resume-craft-eight-chi.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-resume--craft--eight--chi.vercel.app-6366F1?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
   </a>
 </p>
 
 <p align="center">
-  <strong>🌐 Live App:</strong> <a href="https://resumecraft-sigma.vercel.app/">https://resumecraft-sigma.vercel.app/</a>
+  <strong>🌐 Live App:</strong> <a href="https://resume-craft-eight-chi.vercel.app/">https://resume-craft-eight-chi.vercel.app/</a>
 </p>
 
 <p align="center">
