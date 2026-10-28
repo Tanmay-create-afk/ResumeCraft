@@ -17,8 +17,65 @@ connectDB().catch((err) => console.warn('Initial DB connection attempt:', err.me
 
 const app = express();
 
-// Ensure MongoDB is connected for every request (essential for Serverless/Vercel)
+// 1. Enable permissive CORS with credentials for all web origins & Vercel deployments
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, postman)
+      if (!origin) return callback(null, true);
+
+      // Allow all localhost and all *.vercel.app deployment URLs
+      if (
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        origin.endsWith('.vercel.app') ||
+        origin === process.env.CLIENT_URL
+      ) {
+        return callback(null, true);
+      }
+
+      // Default allow web clients
+      return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  })
+);
+
+// Explicitly handle preflight OPTIONS for all routes with 200 OK
+app.options('*', cors());
+
+// 2. Security Headers via Helmet
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
+
+// Health check endpoint (accessible without DB connection)
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    security: 'hardened',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Root endpoint test
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    service: 'ResumeCraft Backend API',
+    endpoints: ['/api/auth', '/api/resumes', '/api/ai', '/api/health'],
+  });
+});
+
+// 3. Ensure MongoDB is connected for data requests (skip for OPTIONS and health)
 app.use(async (req, res, next) => {
+  if (req.method === 'OPTIONS' || req.path === '/api/health' || req.path === '/') {
+    return next();
+  }
   try {
     await connectDB();
     next();
@@ -31,33 +88,6 @@ app.use(async (req, res, next) => {
   }
 });
 
-// 1. Security Headers via Helmet
-app.use(
-  helmet({
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
-  })
-);
-
-// 2. Enable CORS with configurable origins
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  process.env.CLIENT_URL,
-].filter(Boolean);
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, postman) or matching allowed list
-      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-        callback(null, true);
-      } else {
-        callback(new Error('Blocked by CORS policy'));
-      }
-    },
-    credentials: true,
-  })
-);
 
 // 3. Body parser with 10MB limit for base64 image avatars
 app.use(express.json({ limit: '10mb' }));
@@ -87,15 +117,6 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    security: 'hardened',
-    timestamp: new Date().toISOString(),
-  });
-});
 
 // Mount application API routes
 app.use('/api/auth', authRoutes);
