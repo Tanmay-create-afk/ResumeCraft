@@ -3,9 +3,10 @@
  * Supports MongoDB Atlas backend with seamless local-first offline fallback.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL !== undefined
-  ? import.meta.env.VITE_API_URL
-  : (import.meta.env.PROD ? '' : 'http://localhost:5000');
+// In production, always use same-domain relative paths '' so requests go directly to the unified Vercel serverless backend with zero CORS issues
+const API_BASE_URL = import.meta.env.DEV
+  ? (import.meta.env.VITE_API_URL || 'http://localhost:5000')
+  : '';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
