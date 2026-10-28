@@ -12,10 +12,24 @@ import aiRoutes from './src/routes/aiRoutes.js';
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB Atlas
-connectDB();
+// Connect to MongoDB Atlas (initial local boot)
+connectDB().catch((err) => console.warn('Initial DB connection attempt:', err.message));
 
 const app = express();
+
+// Ensure MongoDB is connected for every request (essential for Serverless/Vercel)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection error in request middleware:', err.message);
+    return res.status(500).json({
+      message: 'Database connection failed. Please ensure MONGO_URI is configured in Vercel.',
+      error: process.env.NODE_ENV === 'production' ? undefined : err.message,
+    });
+  }
+});
 
 // 1. Security Headers via Helmet
 app.use(
@@ -181,7 +195,10 @@ process.once('SIGUSR2', () => shutdown('SIGUSR2'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 
-startServer(PORT);
+// Only listen on port in local development (Vercel manages HTTP port in serverless)
+if (!process.env.VERCEL) {
+  startServer(PORT);
+}
 
 export default app;
 

@@ -1,23 +1,30 @@
 import mongoose from 'mongoose';
-import dns from 'dns';
 
-// Ensure standard public DNS resolver for Windows SRV queries
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1']);
-} catch (e) {
-  // Ignore if in restricted environment
-}
+let cachedConnection = null;
 
 const connectDB = async () => {
+  // If already connected, reuse existing database connection (critical for Serverless/Vercel)
+  if (cachedConnection && mongoose.connection.readyState >= 1) {
+    return cachedConnection;
+  }
+
+  const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
+  if (!uri) {
+    console.error('❌ MONGO_URI is not defined in environment variables.');
+    throw new Error('Database connection string (MONGO_URI) is missing.');
+  }
+
   try {
-    const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
-    const conn = await mongoose.connect(uri);
-    console.log(`✅ MongoDB Atlas Connected: ${conn.connection.host}`);
-    return conn;
+    cachedConnection = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 8000,
+    });
+    console.log(`✅ MongoDB Atlas Connected: ${cachedConnection.connection.host}`);
+    return cachedConnection;
   } catch (error) {
     console.error(`❌ MongoDB Connection Error: ${error.message}`);
-    console.log('💡 Tip: Make sure your IP is whitelisted in MongoDB Atlas Network Access (0.0.0.0/0 or your current IP).');
+    throw error;
   }
 };
 
 export default connectDB;
+
