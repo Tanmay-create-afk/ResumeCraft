@@ -75,9 +75,11 @@ export const AuthProvider = ({ children }) => {
       // Offline fallback: check local user store if backend is unreachable
       try {
         const existingUsers = JSON.parse(localStorage.getItem('resumecraft_users_db') || '[]');
-        const found = existingUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+        const found = existingUsers.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
         if (found && found.password === password) {
           const sessionUser = { id: found.id, name: found.name, email: found.email };
+          const sessionToken = 'local_jwt_' + Date.now();
+          localStorage.setItem('token', sessionToken);
           setUser(sessionUser);
           return { success: true, user: sessionUser };
         }
@@ -109,7 +111,30 @@ export const AuthProvider = ({ children }) => {
       setUser(sessionUser);
       return { success: true, user: sessionUser };
     } catch (e) {
-      return { success: false, error: e.message || 'Registration failed' };
+      // High-availability offline fallback: create local profile when backend is unreachable or CORS blocked
+      console.warn('Backend unavailable during registration, saving local profile:', e);
+      try {
+        const existingUsers = JSON.parse(localStorage.getItem('resumecraft_users_db') || '[]');
+        const normalizedEmail = email.trim().toLowerCase();
+        if (existingUsers.some(u => u.email.toLowerCase() === normalizedEmail)) {
+          return { success: false, error: 'User already exists with this email address.' };
+        }
+        const newUser = {
+          id: 'local_user_' + Date.now(),
+          name: name.trim(),
+          email: normalizedEmail,
+          password,
+        };
+        existingUsers.push(newUser);
+        localStorage.setItem('resumecraft_users_db', JSON.stringify(existingUsers));
+        const sessionToken = 'local_jwt_' + Date.now();
+        localStorage.setItem('token', sessionToken);
+        const sessionUser = { id: newUser.id, name: newUser.name, email: newUser.email };
+        setUser(sessionUser);
+        return { success: true, user: sessionUser };
+      } catch (localErr) {
+        return { success: false, error: e.message || 'Registration failed' };
+      }
     }
   };
 
