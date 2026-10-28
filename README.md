@@ -1,6 +1,16 @@
 # 📄 ResumeCraft — Executive AI Resume Builder & ATS Studio
 
 <p align="center">
+  <a href="https://resumecraft-sigma.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/🚀_LIVE_DEMO-resumecraft--sigma.vercel.app-6366F1?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
+  <strong>🌐 Live App:</strong> <a href="https://resumecraft-sigma.vercel.app/">https://resumecraft-sigma.vercel.app/</a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-6.0-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
