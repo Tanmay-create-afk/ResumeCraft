@@ -1,23 +1,82 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useResume } from '../../context/ResumeContext';
-import { User, Mail, Phone, MapPin, Globe, Link2, Code, Camera, Trash2, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Globe, Link2, Code, Camera, Trash2, Eye, EyeOff, Sparkles, Loader2 } from 'lucide-react';
+import api from '../../services/api';
 
 export default function PersonalInfoForm() {
   const { resumeData, updatePersonalInfo } = useResume();
   const { personalInfo } = resumeData;
   const fileInputRef = useRef(null);
+  const [generatingSummary, setGeneratingSummary] = useState(false);
+
+  const handleGenerateSummary = async () => {
+    setGeneratingSummary(true);
+    try {
+      const res = await api.ai.generateSummary(
+        personalInfo.jobTitle,
+        resumeData.skills || [],
+        '4+'
+      );
+      if (res && res.summary) {
+        updatePersonalInfo('summary', res.summary);
+      }
+    } catch (e) {
+      console.warn('AI summary generation error:', e);
+    } finally {
+      setGeneratingSummary(false);
+    }
+  };
 
   const inputClass = "w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 font-medium placeholder:text-slate-400 focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all";
 
   const handleAvatarUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      updatePersonalInfo('avatar', event.target.result);
-      updatePersonalInfo('showAvatar', true);
-    };
-    reader.readAsDataURL(file);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            const MAX_DIM = 300;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_DIM) {
+                height = Math.round((height * MAX_DIM) / width);
+                width = MAX_DIM;
+              }
+            } else {
+              if (height > MAX_DIM) {
+                width = Math.round((width * MAX_DIM) / height);
+                height = MAX_DIM;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Compress to lightweight JPEG under ~30KB
+            const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+            updatePersonalInfo('avatar', optimizedBase64);
+            updatePersonalInfo('showAvatar', true);
+          } catch (err) {
+            console.warn('Canvas resizing failed, falling back:', err);
+            updatePersonalInfo('avatar', event.target.result);
+            updatePersonalInfo('showAvatar', true);
+          }
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Failed to read image file:', err);
+    }
   };
 
   const removeAvatar = () => {
@@ -208,9 +267,30 @@ export default function PersonalInfoForm() {
       </div>
 
       <div>
-        <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-          Professional Summary
-        </label>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            Professional Summary
+          </label>
+          <button
+            type="button"
+            onClick={handleGenerateSummary}
+            disabled={generatingSummary}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-200/80 rounded-lg transition-all cursor-pointer shadow-2xs disabled:opacity-50"
+            title="Generate tailored professional bio based on your job title & skills"
+          >
+            {generatingSummary ? (
+              <>
+                <Loader2 className="w-3 h-3 animate-spin" />
+                <span>Writing Bio...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-3 h-3 text-indigo-600" />
+                <span>Generate with AI</span>
+              </>
+            )}
+          </button>
+        </div>
         <textarea
           rows={4}
           className={`${inputClass} leading-relaxed font-sans`}

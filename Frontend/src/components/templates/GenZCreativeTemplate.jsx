@@ -6,7 +6,7 @@ export default function GenZCreativeTemplate({ resumeData }) {
   const accentColor = theme.accentColor || '#6366f1';
 
   return (
-    <div className="bg-transparent text-slate-900 p-8 min-h-[1056px] w-full font-jakarta text-xs leading-relaxed shadow-sm">
+    <div className="bg-transparent text-slate-900 p-8 min-h-[1123px] w-[794px] font-jakarta text-xs leading-relaxed">
       {/* Top Banner Card with Avatar */}
       {sectionVisibility?.personalInfo && (
         <div 
@@ -15,7 +15,7 @@ export default function GenZCreativeTemplate({ resumeData }) {
             background: `linear-gradient(135deg, ${accentColor} 0%, #0f172a 100%)` 
           }}
         >
-          <div className="relative z-10 flex flex-col sm:flex-row items-center gap-5">
+          <div className="relative z-10 flex flex-row items-center gap-5">
             {personalInfo.avatar && personalInfo.showAvatar && (
               <img
                 src={personalInfo.avatar}
@@ -24,7 +24,7 @@ export default function GenZCreativeTemplate({ resumeData }) {
               />
             )}
 
-            <div className="flex-1 text-center sm:text-left">
+            <div className="flex-1 text-left">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h1 className="text-3xl font-extrabold tracking-tight">
                   {personalInfo.fullName || 'Alex Morgan'}
@@ -34,7 +34,7 @@ export default function GenZCreativeTemplate({ resumeData }) {
                 </span>
               </div>
 
-              <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-4 text-[11px] text-white/90 justify-center sm:justify-start">
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-4 text-[11px] text-white/90 justify-start">
                 {personalInfo.email && (
                   <span className="flex items-center gap-1.5">
                     <Mail className="w-3.5 h-3.5" /> {personalInfo.email}
@@ -87,9 +87,9 @@ export default function GenZCreativeTemplate({ resumeData }) {
       )}
 
       {/* Grid: Main Experience (Left) & Sidebar (Right) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-3 gap-5">
         {/* Experience & Projects (2 Columns) */}
-        <div className="md:col-span-2 space-y-5">
+        <div className="col-span-2 space-y-5">
           {/* Experience */}
           {sectionVisibility?.experiences && experiences && experiences.length > 0 && (
             <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-2xs">

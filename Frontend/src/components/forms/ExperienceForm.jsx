@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useResume } from '../../context/ResumeContext';
-import { Briefcase, Plus, Trash2, Calendar, MapPin, Building, Sparkles } from 'lucide-react';
+import { Briefcase, Plus, Trash2, Calendar, MapPin, Building, Sparkles, Loader2, Wand2 } from 'lucide-react';
+import api from '../../services/api';
 
 const ACTION_VERBS = [
   'Spearheaded', 'Architected', 'Engineered', 'Orchestrated',
@@ -10,6 +11,22 @@ const ACTION_VERBS = [
 export default function ExperienceForm() {
   const { resumeData, addExperience, updateExperience, deleteExperience } = useResume();
   const { experiences } = resumeData;
+  const [enhancingId, setEnhancingId] = useState(null);
+
+  const handleEnhanceWithAI = async (id, currentText, jobTitle) => {
+    if (!currentText || !currentText.trim()) return;
+    setEnhancingId(id);
+    try {
+      const res = await api.ai.enhanceBullet(currentText, jobTitle);
+      if (res && res.enhancedText) {
+        updateExperience(id, 'description', res.enhancedText);
+      }
+    } catch (e) {
+      console.warn('AI enhancement error:', e);
+    } finally {
+      setEnhancingId(null);
+    }
+  };
 
   const insertActionVerb = (id, verb, currentText) => {
     const updated = currentText ? `${currentText}\n• ${verb} ` : `• ${verb} `;
@@ -150,8 +167,29 @@ export default function ExperienceForm() {
                   <label className="block text-xs font-bold text-slate-700">
                     Key Responsibilities & Impact
                   </label>
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-500">
-                    <Sparkles className="w-3 h-3 text-amber-500" /> Quick Verbs:
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleEnhanceWithAI(exp.id, exp.description, exp.jobTitle)}
+                      disabled={enhancingId === exp.id || !exp.description?.trim()}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11px] font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 rounded-md transition-all cursor-pointer disabled:opacity-40 shadow-2xs"
+                      title="AI transforms rough text into quantified, high-impact bullet points"
+                    >
+                      {enhancingId === exp.id ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin text-indigo-600" />
+                          <span>Optimizing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="w-3 h-3 text-indigo-600" />
+                          <span>Improve with AI</span>
+                        </>
+                      )}
+                    </button>
+                    <div className="hidden sm:flex items-center gap-1 text-[11px] font-semibold text-slate-500">
+                      <Sparkles className="w-3 h-3 text-amber-500" /> Quick Verbs:
+                    </div>
                   </div>
                 </div>
 

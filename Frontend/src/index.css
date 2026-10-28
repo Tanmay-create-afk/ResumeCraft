@@ -13,16 +13,20 @@
   }
 }
 
-.font-jakarta {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+.font-jakarta, .font-jakarta *:not(.font-mono) {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
 }
 
-.font-editorial {
-  font-family: 'Newsreader', Georgia, serif;
+.font-editorial, .font-editorial *:not(.font-mono) {
+  font-family: 'Newsreader', Georgia, serif !important;
 }
 
-.font-jetbrains {
-  font-family: 'JetBrains Mono', monospace;
+.font-jetbrains, .font-jetbrains * {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.font-times, .font-times *:not(.font-mono) {
+  font-family: 'Times New Roman', Times, Tinos, Georgia, serif !important;
 }
 
 /* Custom scrollbars */
@@ -41,25 +45,267 @@
   background: rgba(100, 116, 139, 0.7);
 }
 
-/* Print optimizations */
+/* Animation utilities for animate-in, fade-in, zoom-in-95 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes zoomIn95 {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes zoomOut95 {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+@keyframes slideInFromTop1 {
+  from { transform: translateY(-0.25rem); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInFromTop2 {
+  from { transform: translateY(-0.5rem); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-in {
+  animation-duration: 200ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.fade-out {
+  animation-name: fadeOut;
+}
+
+.zoom-in-95 {
+  animation-name: zoomIn95;
+}
+
+.zoom-out-95 {
+  animation-name: zoomOut95;
+}
+
+.slide-in-from-top-1 {
+  animation-name: slideInFromTop1;
+}
+
+/* 3D Holographic ATS Scanner Beam Animation */
+@keyframes atsScan {
+  0% {
+    top: -5%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: 95%;
+    opacity: 0;
+  }
+}
+
+.animate-ats-scan {
+  animation: atsScan 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slideInFromTop2;
+}
+
+/* 3D Floating & Spatial Keyframes */
+@keyframes auroraDrift1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(40px, -25px) scale(1.08);
+  }
+  66% {
+    transform: translate(-30px, 20px) scale(0.95);
+  }
+}
+
+@keyframes auroraDrift2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(-35px, 30px) scale(1.1);
+  }
+  66% {
+    transform: translate(30px, -20px) scale(0.92);
+  }
+}
+
+@keyframes auroraDrift3 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  50% {
+    transform: translate(25px, -35px) scale(1.05);
+  }
+}
+
+@keyframes shimmerBeam {
+  0%, 100% {
+    opacity: 0.25;
+    transform: translateX(-50%) scaleX(0.85);
+  }
+  50% {
+    opacity: 0.65;
+    transform: translateX(-50%) scaleX(1.1);
+  }
+}
+
+.animate-aurora-1 {
+  animation: auroraDrift1 14s ease-in-out infinite;
+}
+
+.animate-aurora-2 {
+  animation: auroraDrift2 18s ease-in-out infinite;
+}
+
+.animate-aurora-3 {
+  animation: auroraDrift3 16s ease-in-out infinite;
+}
+
+.animate-shimmer-beam {
+  animation: shimmerBeam 8s ease-in-out infinite;
+}
+
+@keyframes float3D {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(1.2deg);
+  }
+}
+
+@keyframes float3DReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(9px) rotate(-1.2deg);
+  }
+}
+
+@keyframes pulse3DGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.06);
+  }
+}
+
+.animate-float-3d {
+  animation: float3D 6s ease-in-out infinite;
+}
+
+.animate-float-3d-reverse {
+  animation: float3DReverse 7s ease-in-out infinite;
+}
+
+.animate-pulse-3d {
+  animation: pulse3DGlow 4s ease-in-out infinite;
+}
+
+/* Sleek Executive Studio Buttons */
+.btn-3d-primary {
+  transform: translateY(0);
+  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.38), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-3d-primary:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 22px 0 rgba(79, 70, 229, 0.46), inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+}
+.btn-3d-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px 0 rgba(79, 70, 229, 0.32);
+}
+
+.btn-3d-secondary {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px 0 rgba(15, 23, 42, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-3d-secondary:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 16px 0 rgba(15, 23, 42, 0.10);
+}
+.btn-3d-secondary:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px 0 rgba(15, 23, 42, 0.05);
+}
+
+/* 3D Glassmorphic Surface with Inset Bevel Light */
+.glass-3d-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 24px 45px -15px rgba(15, 23, 42, 0.12),
+              inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+              inset 0 -1px 2px 0 rgba(15, 23, 42, 0.04);
+}
+
+/* Print optimizations: Avoid bare header/button selectors to preserve resume content */
 @media print {
-  body {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html, body {
     background: white !important;
     color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  header, nav, .no-print, button {
+
+  /* Only hide UI chrome explicitly marked with .no-print */
+  .no-print, nav, [role="navigation"], canvas {
     display: none !important;
   }
-  main {
-    padding: 0 !important;
-    margin: 0 !important;
+
+  .print-only {
     display: block !important;
   }
-  .print-area {
+
+  /* Make sure the resume sheet prints cleanly at 100% scale without shadows */
+  .print-area, #resume-preview, .resume-paper {
     box-shadow: none !important;
-    max-width: 100% !important;
+    border: none !important;
+    border-radius: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    transform: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }

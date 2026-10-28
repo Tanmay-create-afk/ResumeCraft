@@ -1,24 +1,34 @@
 import React from 'react';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Award, Languages as LangIcon } from 'lucide-react';
 
 export default function ClassicTemplate({ resumeData }) {
-  const { personalInfo, skills, experiences, education, projects, theme, sectionVisibility } = resumeData;
+  const { personalInfo, skills, experiences, education, projects, certifications, languages, theme, sectionVisibility } = resumeData;
   const accentColor = theme.accentColor || '#1e293b';
 
   return (
-    <div className="bg-transparent text-slate-900 p-10 min-h-[1056px] w-full font-editorial text-[13px] leading-relaxed shadow-sm">
+    <div className="bg-transparent text-slate-900 p-10 min-h-[1123px] w-[794px] font-editorial text-[13px] leading-relaxed">
 
       {/* Wall Street Ivy League Classic Header */}
       {sectionVisibility?.personalInfo && (
-        <header className="text-center border-b-2 border-slate-900 pb-4 mb-4">
+        <header className="text-center border-b-2 pb-4 mb-4" style={{ borderColor: accentColor }}>
+          {personalInfo.avatar && personalInfo.showAvatar && (
+            <div className="flex justify-center mb-3">
+              <img
+                src={personalInfo.avatar}
+                alt={personalInfo.fullName}
+                className="w-16 h-16 rounded-full object-cover shadow-sm border-2"
+                style={{ borderColor: accentColor }}
+              />
+            </div>
+          )}
           <h1 className="text-3xl font-bold uppercase tracking-wider text-slate-900 font-editorial">
             {personalInfo.fullName || 'Candidate Name'}
           </h1>
-          <p className="text-sm italic text-slate-700 mt-1">
+          <p className="text-sm italic text-slate-700 mt-1" style={{ color: accentColor }}>
             {personalInfo.jobTitle || 'Professional Title'}
           </p>
 
-          <div className="flex justify-center flex-wrap gap-x-3 gap-y-1 mt-2 text-xs text-slate-700">
+          <div className="flex justify-center flex-wrap gap-x-3 gap-y-1 mt-2 text-xs text-slate-700 font-sans">
             {personalInfo.location && <span>{personalInfo.location}</span>}
             {personalInfo.location && personalInfo.phone && <span>•</span>}
             {personalInfo.phone && <span>{personalInfo.phone}</span>}
@@ -35,7 +45,7 @@ export default function ClassicTemplate({ resumeData }) {
       {/* Summary */}
       {sectionVisibility?.summary && personalInfo.summary && (
         <section className="mb-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-2 font-sans text-slate-800">
+          <h2 className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2 font-sans" style={{ color: accentColor, borderColor: `${accentColor}40` }}>
             Executive Summary
           </h2>
           <p className="text-slate-800 text-justify leading-relaxed text-[12.5px]">
@@ -47,7 +57,7 @@ export default function ClassicTemplate({ resumeData }) {
       {/* Experience */}
       {sectionVisibility?.experiences && experiences && experiences.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-2 font-sans text-slate-800">
+          <h2 className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2 font-sans" style={{ color: accentColor, borderColor: `${accentColor}40` }}>
             Professional Experience
           </h2>
           <div className="space-y-3.5">
@@ -75,7 +85,7 @@ export default function ClassicTemplate({ resumeData }) {
       {/* Education */}
       {sectionVisibility?.education && education && education.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-2 font-sans text-slate-800">
+          <h2 className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2 font-sans" style={{ color: accentColor, borderColor: `${accentColor}40` }}>
             Education
           </h2>
           <div className="space-y-2">
@@ -99,7 +109,7 @@ export default function ClassicTemplate({ resumeData }) {
       {/* Projects */}
       {sectionVisibility?.projects && projects && projects.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-2 font-sans text-slate-800">
+          <h2 className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2 font-sans" style={{ color: accentColor, borderColor: `${accentColor}40` }}>
             Select Projects & Publications
           </h2>
           <div className="space-y-2.5">
@@ -131,12 +141,41 @@ export default function ClassicTemplate({ resumeData }) {
 
       {/* Skills */}
       {sectionVisibility?.skills && skills && skills.length > 0 && (
-        <section>
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-1.5 font-sans text-slate-800">
-            Skills & Interests
+        <section className="mb-4">
+          <h2 className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-1.5 font-sans" style={{ color: accentColor, borderColor: `${accentColor}40` }}>
+            Skills & Competencies
           </h2>
           <p className="text-slate-800 leading-relaxed text-xs">
-            <span className="font-semibold">Competencies:</span> {skills.join(', ')}
+            {skills.join(' • ')}
+          </p>
+        </section>
+      )}
+
+      {/* Certifications */}
+      {sectionVisibility?.certifications && certifications && certifications.length > 0 && (
+        <section className="mb-4">
+          <h2 className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2 font-sans" style={{ color: accentColor, borderColor: `${accentColor}40` }}>
+            Certifications & Honors
+          </h2>
+          <div className="space-y-1 text-xs">
+            {certifications.map((cert) => (
+              <div key={cert.id} className="flex justify-between items-baseline">
+                <span><strong>{cert.name}</strong> — {cert.issuer}</span>
+                {cert.date && <span className="text-slate-500 italic text-[11px]">{cert.date}</span>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Languages */}
+      {sectionVisibility?.languages && languages && languages.length > 0 && (
+        <section>
+          <h2 className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-1.5 font-sans" style={{ color: accentColor, borderColor: `${accentColor}40` }}>
+            Languages
+          </h2>
+          <p className="text-slate-800 leading-relaxed text-xs">
+            {languages.map(l => `${l.name} (${l.proficiency})`).join(' • ')}
           </p>
         </section>
       )}

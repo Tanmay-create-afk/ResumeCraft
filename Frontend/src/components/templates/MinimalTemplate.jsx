@@ -1,18 +1,30 @@
 import React from 'react';
+import { ExternalLink, Award, Languages as LangIcon } from 'lucide-react';
 
 export default function MinimalTemplate({ resumeData }) {
-  const { personalInfo, skills, experiences, education, projects, theme, sectionVisibility } = resumeData;
+  const { personalInfo, skills, experiences, education, projects, certifications, languages, theme, sectionVisibility } = resumeData;
+  const accentColor = theme.accentColor || '#0d9488';
 
   return (
-    <div className="bg-transparent text-slate-900 p-8 min-h-[1056px] w-full text-xs leading-relaxed shadow-sm">
+    <div className="bg-transparent text-slate-900 p-8 min-h-[1123px] w-[794px] text-xs leading-relaxed">
 
       {/* Centered Minimal Header */}
       {sectionVisibility?.personalInfo && (
-        <div className="text-center pb-4 border-b border-slate-300">
+        <div className="text-center pb-4 border-b-2" style={{ borderColor: accentColor }}>
+          {personalInfo.avatar && personalInfo.showAvatar && (
+            <div className="flex justify-center mb-3">
+              <img
+                src={personalInfo.avatar}
+                alt={personalInfo.fullName}
+                className="w-16 h-16 rounded-full object-cover shadow-sm border-2"
+                style={{ borderColor: accentColor }}
+              />
+            </div>
+          )}
           <h1 className="text-2xl font-bold uppercase tracking-wider text-slate-900">
             {personalInfo.fullName || 'Your Name'}
           </h1>
-          <p className="text-sm italic text-slate-600 mt-0.5">
+          <p className="text-sm font-medium mt-0.5" style={{ color: accentColor }}>
             {personalInfo.jobTitle || 'Professional Title'}
           </p>
 
@@ -42,7 +54,10 @@ export default function MinimalTemplate({ resumeData }) {
       {/* Experience */}
       {sectionVisibility?.experiences && experiences && experiences.length > 0 && (
         <section className="mt-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-2">
+          <h2
+            className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2"
+            style={{ color: accentColor, borderColor: `${accentColor}40` }}
+          >
             Experience
           </h2>
           <div className="space-y-3">
@@ -67,7 +82,10 @@ export default function MinimalTemplate({ resumeData }) {
       {/* Projects */}
       {sectionVisibility?.projects && projects && projects.length > 0 && (
         <section className="mt-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-2">
+          <h2
+            className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2"
+            style={{ color: accentColor, borderColor: `${accentColor}40` }}
+          >
             Projects
           </h2>
           <div className="space-y-2">
@@ -94,7 +112,10 @@ export default function MinimalTemplate({ resumeData }) {
       {/* Education */}
       {sectionVisibility?.education && education && education.length > 0 && (
         <section className="mt-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-2">
+          <h2
+            className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2"
+            style={{ color: accentColor, borderColor: `${accentColor}40` }}
+          >
             Education
           </h2>
           <div className="space-y-1.5">
@@ -116,12 +137,56 @@ export default function MinimalTemplate({ resumeData }) {
       {/* Skills */}
       {sectionVisibility?.skills && skills && skills.length > 0 && (
         <section className="mt-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest border-b border-slate-300 pb-0.5 mb-1.5">
+          <h2
+            className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-1.5"
+            style={{ color: accentColor, borderColor: `${accentColor}40` }}
+          >
             Skills
           </h2>
           <p className="text-slate-700 leading-normal">
             {skills.join(' • ')}
           </p>
+        </section>
+      )}
+
+      {/* Certifications */}
+      {sectionVisibility?.certifications && certifications && certifications.length > 0 && (
+        <section className="mt-4">
+          <h2
+            className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-2"
+            style={{ color: accentColor, borderColor: `${accentColor}40` }}
+          >
+            Certifications
+          </h2>
+          <div className="space-y-1">
+            {certifications.map((cert) => (
+              <div key={cert.id} className="flex justify-between items-baseline">
+                <div>
+                  <span className="font-bold text-slate-800">{cert.name}</span> – {cert.issuer}
+                </div>
+                {cert.date && <span className="text-slate-500 italic text-[11px]">{cert.date}</span>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Languages */}
+      {sectionVisibility?.languages && languages && languages.length > 0 && (
+        <section className="mt-4">
+          <h2
+            className="text-xs font-bold uppercase tracking-widest border-b pb-0.5 mb-1.5"
+            style={{ color: accentColor, borderColor: `${accentColor}40` }}
+          >
+            Languages
+          </h2>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-slate-700">
+            {languages.map((lang) => (
+              <span key={lang.id}>
+                <strong>{lang.name}</strong> ({lang.proficiency})
+              </span>
+            ))}
+          </div>
         </section>
       )}
     </div>

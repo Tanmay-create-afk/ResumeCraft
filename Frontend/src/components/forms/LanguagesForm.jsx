@@ -16,6 +16,13 @@ export default function LanguagesForm() {
     { label: 'Elementary / Basic', level: 25 },
   ];
 
+  const normalizeProficiency = (val) => {
+    if (!val) return 'Intermediate / Conversational';
+    if (val === 'Conversational') return 'Intermediate / Conversational';
+    if (val === 'Elementary') return 'Elementary / Basic';
+    return val;
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-5">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -77,7 +84,7 @@ export default function LanguagesForm() {
                   </label>
                   <select
                     className={inputClass}
-                    value={lang.proficiency}
+                    value={normalizeProficiency(lang.proficiency)}
                     onChange={(e) => {
                       const selected = proficiencies.find(p => p.label === e.target.value);
                       updateLanguage(lang.id, 'proficiency', e.target.value);

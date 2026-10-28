@@ -20,11 +20,11 @@ export default function Button({
   };
 
   const variants = {
-    primary: 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/20 border border-transparent',
-    secondary: 'bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700',
-    outline: 'bg-transparent hover:bg-slate-800/60 text-slate-200 border border-slate-700 hover:border-slate-600',
-    ghost: 'bg-transparent hover:bg-slate-800 text-slate-300 hover:text-white',
-    danger: 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30',
+    primary: 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/20 border border-transparent',
+    secondary: 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200',
+    outline: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 shadow-2xs',
+    ghost: 'bg-transparent hover:bg-slate-100 text-slate-600 hover:text-slate-900',
+    danger: 'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200',
   };
 
   return (

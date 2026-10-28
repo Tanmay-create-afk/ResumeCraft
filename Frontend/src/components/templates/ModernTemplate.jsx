@@ -6,7 +6,7 @@ export default function ModernTemplate({ resumeData }) {
   const accentColor = theme.accentColor || '#2563eb';
 
   return (
-    <div className="bg-transparent text-slate-800 p-8 min-h-[1056px] w-full text-sm leading-relaxed shadow-sm">
+    <div className="bg-transparent text-slate-800 p-8 min-h-[1123px] w-[794px] text-sm leading-relaxed">
       {/* Header with Photo support */}
       {sectionVisibility?.personalInfo && (
         <header className="border-b-2 pb-6 flex items-start gap-5" style={{ borderColor: accentColor }}>
@@ -15,7 +15,7 @@ export default function ModernTemplate({ resumeData }) {
               src={personalInfo.avatar}
               alt={personalInfo.fullName}
               className="w-20 h-20 rounded-2xl object-cover shrink-0 shadow-md border-2 border-white ring-2"
-              style={{ ringColor: accentColor }}
+              style={{ '--tw-ring-color': accentColor }}
             />
           )}
 
@@ -161,7 +161,7 @@ export default function ModernTemplate({ resumeData }) {
           <h2 className="text-xs font-bold tracking-widest uppercase mb-2 border-b border-slate-200 pb-1 flex items-center gap-1.5" style={{ color: accentColor }}>
             <Award className="w-3.5 h-3.5" /> Certifications
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+          <div className="grid grid-cols-2 gap-2 text-xs">
             {certifications.map((cert) => (
               <div key={cert.id} className="p-2 rounded-lg bg-slate-50/80 border border-slate-200">
                 <div className="font-bold text-slate-900 flex items-center justify-between">
@@ -182,7 +182,7 @@ export default function ModernTemplate({ resumeData }) {
       )}
 
       {/* Languages & Education Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+      <div className="grid grid-cols-2 gap-5 mt-5">
         {/* Education */}
         {sectionVisibility?.education && education && education.length > 0 && (
           <section>
@@ -231,6 +231,21 @@ export default function ModernTemplate({ resumeData }) {
               ))}
             </div>
           </section>
+        )}
+
+        {/* Empty State Onboarding Helper (Hidden during Print/Download) */}
+        {!personalInfo.fullName && !personalInfo.summary && (!experiences || experiences.length === 0) && (!skills || skills.length === 0) && (
+          <div className="no-print mt-10 p-8 rounded-2xl border-2 border-dashed border-slate-300 text-center space-y-3 bg-slate-50/70">
+            <div className="w-10 h-10 mx-auto rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-base">
+              📄
+            </div>
+            <h3 className="text-sm font-bold text-slate-800">
+              Blank Resume Canvas
+            </h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+              Start typing your information on the left panel, or click <strong className="text-indigo-600 font-semibold">Sample Data</strong> on the top bar to load a complete example.
+            </p>
+          </div>
         )}
       </div>
     </div>
