@@ -92,7 +92,7 @@ async function sendOTPEmail(toEmail, userName, otp) {
           <tr>
             <td style="background-color: #f8fafc; border-top: 1px solid #f1f5f9; padding: 24px 36px; text-align: center;">
               <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 12px;">
-                Sent with ❤️ from <b>ResumeCraft Studio</b>
+                Sent from <b>ResumeCraft Studio</b>
               </p>
               <p style="margin: 0; color: #cbd5e1; font-size: 11px;">
                 <a href="https://resume-craft-eight-chi.vercel.app" style="color: #6366f1; text-decoration: none; font-weight: 600;">Visit ResumeCraft</a> &bull; ATS Compliance Engine &bull; Lossless PDF Studio
