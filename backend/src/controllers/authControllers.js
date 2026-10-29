@@ -14,9 +14,100 @@ const generateToken = (id) => {
   );
 };
 
-// Helper: Send Brevo OTP Email
+// Helper: Send Brevo OTP Email with Executive Design & Logo
 async function sendOTPEmail(toEmail, userName, otp) {
   try {
+    const logoUrl = 'https://resume-craft-eight-chi.vercel.app/logo.png';
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your ResumeCraft Verification Code</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f1f5f9; padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 520px; background-color: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);">
+          
+          <!-- Top Gradient Accent Bar -->
+          <tr>
+            <td style="height: 6px; background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);"></td>
+          </tr>
+
+          <!-- Brand Logo & Header -->
+          <tr>
+            <td style="padding: 36px 36px 20px 36px; text-align: center;">
+              <table border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+                <tr>
+                  <td align="center" style="width: 68px; height: 68px; border-radius: 18px; background: #ffffff; border: 1px solid #e0e7ff; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15); padding: 6px;">
+                    <img src="${logoUrl}" alt="ResumeCraft" width="56" height="56" style="display: block; border-radius: 14px; object-fit: contain;" />
+                  </td>
+                </tr>
+              </table>
+              <h1 style="margin: 16px 0 4px 0; color: #0f172a; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">ResumeCraft</h1>
+              <p style="margin: 0; color: #64748b; font-size: 13px; font-weight: 500;">Executive AI Resume Builder &amp; ATS Studio</p>
+            </td>
+          </tr>
+
+          <!-- Content Body -->
+          <tr>
+            <td style="padding: 0 36px 28px 36px;">
+              <p style="margin: 0 0 14px 0; color: #1e293b; font-size: 16px; font-weight: 600;">
+                Hello ${userName || 'Professional'},
+              </p>
+              <p style="margin: 0 0 24px 0; color: #475569; font-size: 14px; line-height: 1.6;">
+                Welcome to <b>ResumeCraft</b>. You're just one step away from building recruiter-ready, ATS-optimized resumes. Please enter the verification code below to activate your account:
+              </p>
+
+              <!-- OTP Code Display Card -->
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background: linear-gradient(180deg, #f8faff 0%, #eef2ff 100%); border-radius: 16px; border: 1.5px dashed #c7d2fe; padding: 24px 16px; text-align: center;">
+                <tr>
+                  <td align="center">
+                    <div style="color: #6366f1; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">One-Time Verification Code</div>
+                    <div style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 38px; font-weight: 800; letter-spacing: 12px; color: #3730a3; padding: 4px 0 8px 12px;">
+                      ${otp}
+                    </div>
+                    <div style="display: inline-block; background-color: #ffffff; border: 1px solid #e0e7ff; border-radius: 20px; padding: 4px 14px; color: #64748b; font-size: 12px; font-weight: 500;">
+                      ⏱️ Valid for <b>10 minutes</b>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Security Tip -->
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 24px; background-color: #f8fafc; border-radius: 12px; border: 1px solid #f1f5f9; padding: 12px 14px;">
+                <tr>
+                  <td style="color: #64748b; font-size: 12px; line-height: 1.5;">
+                    🔒 <b>Security Tip:</b> Never share this code with anyone. ResumeCraft support will never ask for your verification code.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8fafc; border-top: 1px solid #f1f5f9; padding: 24px 36px; text-align: center;">
+              <p style="margin: 0 0 8px 0; color: #94a3b8; font-size: 12px;">
+                Sent with ❤️ from <b>ResumeCraft Studio</b>
+              </p>
+              <p style="margin: 0; color: #cbd5e1; font-size: 11px;">
+                <a href="https://resume-craft-eight-chi.vercel.app" style="color: #6366f1; text-decoration: none; font-weight: 600;">Visit ResumeCraft</a> &bull; ATS Compliance Engine &bull; Lossless PDF Studio
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
     const res = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
@@ -26,29 +117,8 @@ async function sendOTPEmail(toEmail, userName, otp) {
       body: JSON.stringify({
         sender: { name: BREVO_SENDER_NAME, email: BREVO_SENDER_EMAIL },
         to: [{ email: toEmail, name: userName || 'User' }],
-        subject: `Your ResumeCraft Verification Code: ${otp}`,
-        htmlContent: `
-          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; padding: 40px 20px;">
-            <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; padding: 32px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-              <div style="text-align: center; margin-bottom: 24px;">
-                <h2 style="color: #4f46e5; margin: 0; font-size: 24px; font-weight: 700;">ResumeCraft</h2>
-                <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Executive AI Resume Builder & ATS Studio</p>
-              </div>
-              <p style="color: #334155; font-size: 16px; line-height: 1.5; margin-bottom: 16px;">
-                Hello <b>${userName || 'Professional'}</b>,
-              </p>
-              <p style="color: #475569; font-size: 15px; line-height: 1.5; margin-bottom: 24px;">
-                Thank you for joining ResumeCraft. Please enter the following 6-digit verification code to complete your registration:
-              </p>
-              <div style="text-align: center; background-color: #f1f5f9; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
-                <span style="font-size: 34px; font-weight: 700; letter-spacing: 10px; color: #4338ca;">${otp}</span>
-              </div>
-              <p style="color: #94a3b8; font-size: 13px; line-height: 1.5; margin-bottom: 0; text-align: center;">
-                This code expires in <b>10 minutes</b>. If you did not create a ResumeCraft account, you can safely disregard this email.
-              </p>
-            </div>
-          </div>
-        `,
+        subject: `🔐 ${otp} is your ResumeCraft verification code`,
+        htmlContent: html,
       }),
     });
 
