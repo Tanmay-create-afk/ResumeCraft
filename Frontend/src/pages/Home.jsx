@@ -750,7 +750,7 @@ function ShowcaseMockupSheet({ id, accentColor, embedded = false }) {
 // Interactive Live Studio Preview for the Hero Section
 function HeroStudioPreview({ onOpenStudio }) {
   const [selectedStyle, setSelectedStyle] = useState('classic-ats');
-  const [cameraMode, setCameraMode] = useState('isometric'); // 'isometric' | 'dynamic' | 'flat'
+  const [cameraMode, setCameraMode] = useState('flat'); // 'flat' | 'dynamic' | 'isometric'
 
   const styles = [
     { 
@@ -846,16 +846,16 @@ function HeroStudioPreview({ onOpenStudio }) {
             <div className="flex items-center bg-slate-100 p-0.5 sm:p-1 rounded-xl border border-slate-200/90 text-xs">
               <button
                 type="button"
-                onClick={() => setCameraMode('isometric')}
+                onClick={() => setCameraMode('flat')}
                 className={`px-2 sm:px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                  cameraMode === 'isometric'
+                  cameraMode === 'flat'
                     ? 'bg-indigo-600 text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
-                title="3D Physical Desk View"
+                title="Flat Focus View"
               >
-                <Box className="w-3.5 h-3.5 text-indigo-200 shrink-0" />
-                <span className="text-xs">3D Desk</span>
+                <span className="text-xs shrink-0">📄</span>
+                <span className="text-xs">Flat</span>
               </button>
               <button
                 type="button"
@@ -872,16 +872,16 @@ function HeroStudioPreview({ onOpenStudio }) {
               </button>
               <button
                 type="button"
-                onClick={() => setCameraMode('flat')}
+                onClick={() => setCameraMode('isometric')}
                 className={`px-2 sm:px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                  cameraMode === 'flat'
+                  cameraMode === 'isometric'
                     ? 'bg-indigo-600 text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
                 }`}
-                title="Flat Focus View"
+                title="3D Physical Desk View"
               >
-                <span className="text-xs shrink-0">📄</span>
-                <span className="text-xs">Flat</span>
+                <Box className="w-3.5 h-3.5 text-indigo-200 shrink-0" />
+                <span className="text-xs">3D Desk</span>
               </button>
             </div>
 
