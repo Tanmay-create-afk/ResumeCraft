@@ -181,7 +181,7 @@ async function sendOTPEmail(toEmail, userName, otp) {
       body: JSON.stringify({
         sender: { name: BREVO_SENDER_NAME, email: BREVO_SENDER_EMAIL },
         to: [{ email: toEmail, name: userName || 'User' }],
-        subject: `🔐 ${otp} is your ResumeCraft verification code`,
+        subject: 'Verify your ResumeCraft account',
         htmlContent: html,
       }),
     });
