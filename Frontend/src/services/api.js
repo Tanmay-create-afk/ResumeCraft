@@ -45,6 +45,32 @@ export const api = {
       return data;
     },
 
+    async verifyOTP(email, otp) {
+      const res = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Verification failed');
+      }
+      return data;
+    },
+
+    async resendOTP(email) {
+      const res = await fetch(`${API_BASE_URL}/api/auth/resend-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to resend code');
+      }
+      return data;
+    },
+
     async getMe() {
       const token = localStorage.getItem('token');
       if (!token) return null;

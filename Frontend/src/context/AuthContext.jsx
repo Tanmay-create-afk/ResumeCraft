@@ -100,6 +100,9 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const data = await api.auth.register(name.trim(), email.trim(), password);
+      if (data.requireOtp) {
+        return { success: true, requireOtp: true, email: data.email, message: data.message };
+      }
       if (data.token) {
         localStorage.setItem('token', data.token);
       }
@@ -111,30 +114,40 @@ export const AuthProvider = ({ children }) => {
       setUser(sessionUser);
       return { success: true, user: sessionUser };
     } catch (e) {
-      // High-availability offline fallback: create local profile when backend is unreachable or CORS blocked
-      console.warn('Backend unavailable during registration, saving local profile:', e);
-      try {
-        const existingUsers = JSON.parse(localStorage.getItem('resumecraft_users_db') || '[]');
-        const normalizedEmail = email.trim().toLowerCase();
-        if (existingUsers.some(u => u.email.toLowerCase() === normalizedEmail)) {
-          return { success: false, error: 'User already exists with this email address.' };
-        }
-        const newUser = {
-          id: 'local_user_' + Date.now(),
-          name: name.trim(),
-          email: normalizedEmail,
-          password,
-        };
-        existingUsers.push(newUser);
-        localStorage.setItem('resumecraft_users_db', JSON.stringify(existingUsers));
-        const sessionToken = 'local_jwt_' + Date.now();
-        localStorage.setItem('token', sessionToken);
-        const sessionUser = { id: newUser.id, name: newUser.name, email: newUser.email };
-        setUser(sessionUser);
-        return { success: true, user: sessionUser };
-      } catch (localErr) {
-        return { success: false, error: e.message || 'Registration failed' };
+      return { success: false, error: e.message || 'Registration failed' };
+    }
+  };
+
+  const verifyOTP = async (email, otp) => {
+    if (!email || !otp) {
+      return { success: false, error: 'Email and 6-digit verification code are required.' };
+    }
+    try {
+      const data = await api.auth.verifyOTP(email.trim(), otp.trim());
+      if (data.token) {
+        localStorage.setItem('token', data.token);
       }
+      const sessionUser = {
+        id: data._id,
+        name: data.name,
+        email: data.email,
+      };
+      setUser(sessionUser);
+      return { success: true, user: sessionUser };
+    } catch (e) {
+      return { success: false, error: e.message || 'Verification failed. Please check the code.' };
+    }
+  };
+
+  const resendOTP = async (email) => {
+    if (!email) {
+      return { success: false, error: 'Email is required to resend verification code.' };
+    }
+    try {
+      const data = await api.auth.resendOTP(email.trim());
+      return { success: true, message: data.message };
+    } catch (e) {
+      return { success: false, error: e.message || 'Failed to resend code.' };
     }
   };
 
@@ -152,6 +165,8 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         register,
+        verifyOTP,
+        resendOTP,
         logout,
       }}
     >
