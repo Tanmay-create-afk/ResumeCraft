@@ -1,6 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, UserPlus, Sparkles, AlertCircle, ShieldCheck, Zap, CheckCircle2, ArrowRight, ArrowLeft, RefreshCw, Pencil, ShieldAlert } from 'lucide-react';
+import { 
+  User, 
+  Mail, 
+  Lock, 
+  UserPlus, 
+  Sparkles, 
+  AlertCircle, 
+  ShieldCheck, 
+  Zap, 
+  CheckCircle2, 
+  ArrowRight, 
+  ArrowLeft, 
+  RefreshCw, 
+  Pencil, 
+  Clock, 
+  Check, 
+  KeyRound,
+  Shield,
+  CheckCheck
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/common/Input';
 
@@ -193,8 +212,70 @@ export default function Register() {
           </span>
         </div>
 
-        {/* Main Card */}
-        <div className="p-8 sm:p-9 rounded-3xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xl shadow-slate-900/8 space-y-6">
+        {/* Main Card with Subtle Gradient Rim */}
+        <div className="p-7 sm:p-9 rounded-3xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-2xl shadow-indigo-950/5 space-y-6">
+
+          {/* Interactive Multi-Step Indicator Bar */}
+          <div className="flex items-center justify-between pb-5 border-b border-slate-100">
+            {/* Step 1 Pill */}
+            <div 
+              onClick={() => {
+                if (step === 'otp') {
+                  setStep('details');
+                  setError('');
+                  setSuccessMsg('');
+                }
+              }}
+              className={`flex items-center gap-2.5 ${step === 'otp' ? 'cursor-pointer group' : ''}`}
+            >
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                step === 'otp'
+                  ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/30 group-hover:scale-105'
+                  : 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 ring-4 ring-indigo-500/15'
+              }`}>
+                {step === 'otp' ? <Check className="w-4 h-4 stroke-[3]" /> : '1'}
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Step 1</p>
+                <p className={`text-xs font-semibold ${step === 'otp' ? 'text-slate-700 group-hover:text-indigo-600' : 'text-slate-900 font-bold'}`}>
+                  Account Details
+                </p>
+              </div>
+            </div>
+
+            {/* Connecting Progress Track */}
+            <div className="flex-1 mx-3 h-1 bg-slate-100 rounded-full overflow-hidden relative">
+              <div 
+                className={`h-full transition-all duration-500 rounded-full ${
+                  step === 'otp' ? 'w-full bg-gradient-to-r from-emerald-500 to-indigo-600' : 'w-1/2 bg-indigo-600'
+                }`} 
+              />
+            </div>
+
+            {/* Step 2 Pill */}
+            <div className="flex items-center gap-2.5">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                step === 'otp'
+                  ? 'bg-indigo-600 text-white ring-4 ring-indigo-500/20 shadow-md shadow-indigo-600/30'
+                  : 'bg-slate-100 text-slate-400 border border-slate-200'
+              }`}>
+                {step === 'otp' ? (
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
+                  </span>
+                ) : (
+                  '2'
+                )}
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Step 2</p>
+                <p className={`text-xs font-semibold ${step === 'otp' ? 'text-indigo-600 font-bold' : 'text-slate-400'}`}>
+                  Verification
+                </p>
+              </div>
+            </div>
+          </div>
 
           {step === 'details' ? (
             /* STEP 1: REGISTRATION DETAILS */
@@ -250,10 +331,10 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-60 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 text-sm transition-all cursor-pointer active:scale-[0.98]"
+                  className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-60 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 text-sm transition-all cursor-pointer active:scale-[0.98]"
                 >
                   <UserPlus className="w-4 h-4 shrink-0" />
-                  <span>{loading ? 'Sending Code...' : 'Create Account'}</span>
+                  <span>{loading ? 'Sending Code...' : 'Create Account & Continue'}</span>
                 </button>
               </form>
 
@@ -267,21 +348,38 @@ export default function Register() {
           ) : (
             /* STEP 2: PROFESSIONAL 6-BOX OTP VERIFICATION */
             <>
-              {/* Header with Official Logo & Subtle Glow */}
-              <div className="text-center space-y-2">
-                <div className="relative inline-block mb-1">
-                  <div className="absolute inset-0 bg-indigo-500/20 rounded-2xl blur-md" />
-                  <div className="relative inline-flex p-3 bg-white border border-indigo-100/90 rounded-2xl shadow-sm">
-                    <img src="/logo.png" alt="ResumeCraft" className="w-9 h-9 object-contain" />
+              {/* Executive Hero Graphic & Security Icon */}
+              <div className="text-center space-y-2.5">
+                <div className="relative inline-flex items-center justify-center mb-1">
+                  {/* Subtle soft ambient aura */}
+                  <div className="absolute -inset-2 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-blue-500/20 rounded-3xl blur-md" />
+                  
+                  {/* Badge Container */}
+                  <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-b from-white to-indigo-50/50 border border-indigo-100 shadow-md shadow-indigo-900/5">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-sm shadow-indigo-600/30">
+                      <KeyRound className="w-5 h-5" />
+                    </div>
+                    {/* Live active beacon */}
+                    <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white items-center justify-center">
+                        <Check className="w-2.5 h-2.5 text-white stroke-[3]" />
+                      </span>
+                    </span>
                   </div>
                 </div>
 
-                <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Verify Your Email</h1>
+                <div className="space-y-1">
+                  <h1 className="text-2xl font-black text-slate-900 tracking-tight">Verify Your Email</h1>
+                  <p className="text-xs text-slate-500">
+                    We've sent a 6-digit one-time passcode to:
+                  </p>
+                </div>
                 
-                {/* Email Pill with Edit Button */}
-                <div className="flex items-center justify-center gap-1.5 text-xs text-slate-600 bg-slate-50 border border-slate-200/80 rounded-full py-1 px-3 max-w-fit mx-auto">
+                {/* Interactive User Email Pill with Edit Button */}
+                <div className="inline-flex items-center gap-2 py-1 px-3.5 bg-slate-50 hover:bg-slate-100/90 border border-slate-200/90 rounded-full text-xs transition-colors shadow-2xs mx-auto">
                   <Mail className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-                  <span className="font-semibold text-slate-800 truncate max-w-[200px]">{email}</span>
+                  <span className="font-semibold text-slate-800 tracking-tight truncate max-w-[210px]">{email}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -289,15 +387,16 @@ export default function Register() {
                       setError('');
                       setSuccessMsg('');
                     }}
-                    title="Change email"
-                    className="ml-1 text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Edit email address"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer pl-1.5 border-l border-slate-200"
                   >
-                    <Pencil className="w-3 h-3" />
+                    <Pencil className="w-2.5 h-2.5" />
+                    <span>Change</span>
                   </button>
                 </div>
               </div>
 
-              {/* Error Message */}
+              {/* Error Alert */}
               {error && (
                 <div className="flex items-center gap-2.5 p-3 text-xs rounded-xl bg-rose-50 border border-rose-200 text-rose-700 animate-in fade-in">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -313,15 +412,16 @@ export default function Register() {
                 </div>
               )}
 
-              {/* 6 Individual Code Boxes */}
+              {/* 6 Individual Digits Code Box Form */}
               <form onSubmit={handleVerifyOtp} className="space-y-6 pt-1">
                 <div>
                   <div className="flex items-center justify-between mb-3 px-1">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                      Security Code
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-indigo-500" />
+                      <span>Security PIN</span>
                     </span>
-                    <span className="text-[11px] font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-md px-2 py-0.5">
-                      6 Digits
+                    <span className="text-[11px] font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-md px-2 py-0.5">
+                      10 Min Expiry
                     </span>
                   </div>
 
@@ -330,7 +430,9 @@ export default function Register() {
                     {digits.map((digit, idx) => (
                       <React.Fragment key={idx}>
                         {idx === 3 && (
-                          <span className="text-slate-300 font-bold select-none text-lg px-0.5">—</span>
+                          <div className="flex items-center px-0.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                          </div>
                         )}
                         <input
                           ref={(el) => (inputRefs.current[idx] = el)}
@@ -340,10 +442,10 @@ export default function Register() {
                           value={digit}
                           onChange={(e) => handleDigitChange(idx, e.target.value)}
                           onKeyDown={(e) => handleKeyDown(idx, e)}
-                          className={`w-11 h-14 sm:w-12 sm:h-14 text-center text-2xl font-mono font-extrabold rounded-xl border-2 transition-all outline-none select-all ${
+                          className={`w-11 h-14 sm:w-12 sm:h-15 text-center text-2xl font-mono font-black rounded-xl border-2 transition-all outline-none select-all ${
                             digit
-                              ? 'border-indigo-600 bg-indigo-50/30 text-indigo-950 shadow-xs'
-                              : 'border-slate-200 bg-slate-50/70 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/15'
+                              ? 'border-indigo-600 bg-indigo-50/40 text-indigo-950 shadow-sm shadow-indigo-600/10 scale-[1.02]'
+                              : 'border-slate-200 bg-slate-50/70 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/15 focus:scale-[1.03]'
                           }`}
                         />
                       </React.Fragment>
@@ -351,54 +453,85 @@ export default function Register() {
                   </div>
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit Action Button */}
                 <button
                   type="submit"
                   disabled={loading || fullCodeLength !== 6}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 text-sm transition-all cursor-pointer active:scale-[0.98]"
+                  className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 text-sm transition-all cursor-pointer active:scale-[0.98] group"
                 >
                   {loading ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin shrink-0" />
-                      <span>Verifying with Studio...</span>
+                      <span>Verifying Security Code...</span>
                     </>
                   ) : (
                     <>
                       <span>Verify &amp; Launch Studio</span>
-                      <ArrowRight className="w-4 h-4 shrink-0" />
+                      <ArrowRight className="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
                     </>
                   )}
                 </button>
               </form>
 
-              {/* Resend & Help Footer */}
-              <div className="pt-1 flex flex-col items-center gap-2.5 text-xs">
+              {/* Resend Cooldown with Visual Dynamic Bar */}
+              <div className="pt-2 border-t border-slate-100 flex flex-col items-center gap-3 text-xs">
                 {canResend ? (
                   <button
                     type="button"
                     onClick={handleResend}
                     disabled={loading}
-                    className="inline-flex items-center gap-1.5 font-bold text-indigo-600 hover:text-indigo-700 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-200/80 text-indigo-700 font-bold transition-all cursor-pointer shadow-xs active:scale-[0.98]"
                   >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Resend verification code</span>
+                    <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+                    <span>Resend Security Code</span>
                   </button>
                 ) : (
-                  <p className="text-slate-500 font-medium">
-                    Resend code in <b className="text-indigo-600 font-mono font-bold">{countdown}s</b>
-                  </p>
+                  <div className="w-full max-w-xs space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium px-1">
+                      <span className="flex items-center gap-1.5 text-slate-500">
+                        <Clock className="w-3.5 h-3.5 text-slate-400" />
+                        <span>Resend available in</span>
+                      </span>
+                      <span className="font-mono font-bold text-indigo-600">{countdown}s</span>
+                    </div>
+                    {/* Visual countdown progress line */}
+                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-indigo-500 rounded-full transition-all duration-1000 ease-linear"
+                        style={{ width: `${(countdown / 60) * 100}%` }}
+                      />
+                    </div>
+                  </div>
                 )}
 
                 <p className="text-[11px] text-slate-400">
-                  Didn't receive it? Check your spam folder or Promotions tab.
+                  Didn't receive it? Check spam folder or promotions tab.
                 </p>
+              </div>
+
+              {/* Bottom Security Trust Badges */}
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-3 text-[11px] font-medium text-slate-400 border-t border-slate-100">
+                <span className="flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>256-Bit SSL</span>
+                </span>
+                <span className="text-slate-300">•</span>
+                <span className="flex items-center gap-1">
+                  <Zap className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Instant Auth</span>
+                </span>
+                <span className="text-slate-300">•</span>
+                <span className="flex items-center gap-1">
+                  <CheckCheck className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Brevo Verified</span>
+                </span>
               </div>
             </>
           )}
 
         </div>
 
-        {/* Trust Badges */}
+        {/* Global Footer Trust Badges */}
         <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] font-medium text-slate-500">
           <span className="flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
