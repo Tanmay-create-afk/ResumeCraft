@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
-const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'tanmayyawalkar3@gmail.com';
+const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'resumecraftstudio3@gmail.com';
 const BREVO_SENDER_NAME = 'ResumeCraft Verification';
 
 // Helper: Generate JWT token for user session

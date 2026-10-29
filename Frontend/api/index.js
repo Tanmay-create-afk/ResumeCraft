@@ -9,7 +9,7 @@ app.use(express.json({ limit: '10mb' }));
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://tanmayyawalkar3_db_user:dkE08MRqWr0Xenr7@ac-zx3aohw-shard-00-00.qhkt9lz.mongodb.net:27017,ac-zx3aohw-shard-00-01.qhkt9lz.mongodb.net:27017,ac-zx3aohw-shard-00-02.qhkt9lz.mongodb.net:27017/resumecraft?ssl=true&replicaSet=atlas-yyapov-shard-0&authSource=admin';
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_resume_builder_2026';
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
-const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'tanmayyawalkar3@gmail.com';
+const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'resumecraftstudio3@gmail.com';
 const BREVO_SENDER_NAME = 'ResumeCraft Verification';
 
 let cachedDb = null;
