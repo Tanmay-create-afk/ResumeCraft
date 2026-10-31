@@ -1,0 +1,14 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /templates
+Allow: /login
+Allow: /register
+
+# Disallow indexing of private / authenticated user sessions
+Disallow: /dashboard
+Disallow: /builder
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://resume-craft-eight-chi.vercel.app/sitemap.xml
