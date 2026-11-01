@@ -67,22 +67,11 @@ export default function Builder() {
           <div className="h-4 w-px bg-slate-200 hidden sm:block shrink-0" />
           <div className="flex items-center gap-2 font-mono text-xs text-slate-600 min-w-0">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-            <span className="font-bold text-slate-900 truncate max-w-[90px] sm:max-w-[130px] lg:max-w-[170px]">
+            <span className="font-bold text-slate-900 truncate max-w-[100px] sm:max-w-[140px] lg:max-w-[180px]">
               {(candidateName || 'Resume').toLowerCase().replace(/\s+/g, '_')}.pdf
             </span>
-            <span className="hidden xl:inline text-slate-400 shrink-0">• {roleTitle}</span>
+            <span className="hidden 2xl:inline text-slate-400 shrink-0">• {roleTitle}</span>
           </div>
-
-          {/* Quick Action Badges */}
-          <button
-            type="button"
-            onClick={() => setShowATSModal(true)}
-            className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 text-emerald-700 text-[10.5px] font-bold shrink-0 transition-colors cursor-pointer"
-            title="Scan resume match against target Job Description"
-          >
-            <Target className="w-3 h-3 text-emerald-600" />
-            <span>ATS 99/100 • Scan JD</span>
-          </button>
         </div>
 
         {/* Center: Desktop Layout Switcher (The 3 Subsections: Editor | Split Screen | Full Canvas) */}
@@ -152,6 +141,15 @@ export default function Builder() {
 
         {/* Right: Studio Quick Actions & Share */}
         <div className="hidden sm:flex items-center gap-2 shrink-0 z-10">
+          <button
+            type="button"
+            onClick={() => setShowATSModal(true)}
+            className="text-[11px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100/90 px-2.5 py-1 rounded-lg border border-emerald-200/90 flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+            title="Scan resume match against target Job Description"
+          >
+            <Target className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="hidden md:inline">ATS 99/100</span>
+          </button>
           
           <button
             type="button"
