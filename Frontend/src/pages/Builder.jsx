@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import ResumeEditor from '../components/ResumeEditor';
 import ResumePreview from '../components/ResumePreview';
 import ATSScannerModal from '../components/common/ATSScannerModal';
+import CoverLetterModal from '../components/common/CoverLetterModal';
+import SmartExportModal from '../components/common/SmartExportModal';
+import RolePresetsModal from '../components/common/RolePresetsModal';
+import StylingStudioModal from '../components/common/StylingStudioModal';
 import { useResume } from '../context/ResumeContext';
 import { 
   Eye, Edit3, Columns, Sparkles, CheckCircle2, 
-  Maximize2, ArrowLeft, Download, FileText, Target, Share2, Copy, Check
+  Maximize2, ArrowLeft, Download, FileText, Target, Share2, Copy, Check,
+  Mail, FileCode, Palette
 } from 'lucide-react';
 import api from '../services/api';
 
@@ -14,6 +19,10 @@ export default function Builder() {
   const [mobileView, setMobileView] = useState('editor');
   const [desktopLayout, setDesktopLayout] = useState('split'); // 'split' | 'editor' | 'preview'
   const [showATSModal, setShowATSModal] = useState(false);
+  const [showCoverLetterModal, setShowCoverLetterModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [showRolesModal, setShowRolesModal] = useState(false);
+  const [showStyleModal, setShowStyleModal] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [sharing, setSharing] = useState(false);
 
@@ -63,6 +72,8 @@ export default function Builder() {
             </span>
             <span className="hidden xl:inline text-slate-400 shrink-0">• {roleTitle}</span>
           </div>
+
+          {/* Quick Action Badges */}
           <button
             type="button"
             onClick={() => setShowATSModal(true)}
@@ -75,7 +86,6 @@ export default function Builder() {
         </div>
 
         {/* Center: Desktop Layout Switcher (The 3 Subsections: Editor | Split Screen | Full Canvas) */}
-        {/* Placed EXACTLY under Navbar's [Templates | Studio Builder | My Resumes] pill (absolute left-1/2 -translate-x-1/2) */}
         <div className="hidden lg:flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80 shrink-0 absolute left-1/2 -translate-x-1/2 z-20">
           <button
             type="button"
@@ -140,8 +150,29 @@ export default function Builder() {
           </button>
         </div>
 
-        {/* Right: Real-Time Sync Indicator & Share */}
+        {/* Right: Studio Quick Actions & Share */}
         <div className="hidden sm:flex items-center gap-2 shrink-0 z-10">
+          
+          <button
+            type="button"
+            onClick={() => setShowCoverLetterModal(true)}
+            className="text-[11px] font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 px-2.5 py-1 rounded-lg border border-purple-200/80 flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+            title="Create tailored cover letter"
+          >
+            <Mail className="w-3 h-3 text-purple-600" />
+            <span className="hidden md:inline">Cover Letter</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowExportModal(true)}
+            className="text-[11px] font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/80 flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+            title="Copy ATS plain text or download JSON backup"
+          >
+            <FileCode className="w-3 h-3 text-slate-600" />
+            <span className="hidden md:inline">ATS PlainText</span>
+          </button>
+
           <button
             type="button"
             onClick={handleSharePortfolio}
@@ -161,7 +192,7 @@ export default function Builder() {
             )}
           </button>
 
-          <span className="text-[11px] font-mono text-slate-600 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200/80 flex items-center gap-1.5 shadow-2xs">
+          <span className="text-[11px] font-mono text-slate-600 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200/80 hidden xl:flex items-center gap-1.5 shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span>Sync: &lt;5ms</span>
           </span>
@@ -201,11 +232,31 @@ export default function Builder() {
         </section>
       </main>
 
-      {/* ATS Scanner Modal */}
+      {/* Powerhouse Modals */}
       <ATSScannerModal
         isOpen={showATSModal}
         onClose={() => setShowATSModal(false)}
         resumeData={resumeData}
+      />
+
+      <CoverLetterModal
+        isOpen={showCoverLetterModal}
+        onClose={() => setShowCoverLetterModal(false)}
+      />
+
+      <SmartExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+      />
+
+      <RolePresetsModal
+        isOpen={showRolesModal}
+        onClose={() => setShowRolesModal(false)}
+      />
+
+      <StylingStudioModal
+        isOpen={showStyleModal}
+        onClose={() => setShowStyleModal(false)}
       />
     </div>
   );
