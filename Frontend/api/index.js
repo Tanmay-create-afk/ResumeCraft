@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://tanmayyawalkar3_db_user:dkE08MRqWr0Xenr7@ac-zx3aohw-shard-00-00.qhkt9lz.mongodb.net:27017,ac-zx3aohw-shard-00-01.qhkt9lz.mongodb.net:27017,ac-zx3aohw-shard-00-02.qhkt9lz.mongodb.net:27017/resumecraft?ssl=true&replicaSet=atlas-yyapov-shard-0&authSource=admin';
+const MONGO_URI = process.env.MONGO_URI;
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_resume_builder_2026';
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'resumecraftstudio3@gmail.com';
@@ -14,6 +14,9 @@ const BREVO_SENDER_NAME = 'ResumeCraft Verification';
 
 let cachedDb = null;
 async function connectToDatabase() {
+  if (!MONGO_URI) {
+    throw new Error('MONGO_URI environment variable is missing.');
+  }
   if (cachedDb && mongoose.connection.readyState >= 1) {
     return cachedDb;
   }
@@ -84,6 +87,13 @@ const generateToken = (id) => {
 async function sendOTPEmail(toEmail, userName, otp) {
   try {
     const logoUrl = 'https://resume-craft-eight-chi.vercel.app/logo.png';
+    const safeName = String(userName || 'there')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
     const html = `
 <!DOCTYPE html>
 <html>
@@ -128,7 +138,7 @@ async function sendOTPEmail(toEmail, userName, otp) {
           <tr>
             <td style="padding: 0 36px 28px 36px;">
               <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 24px; color: #334155;">
-                Hello <b>${userName || 'there'}</b>,
+                Hello <b>${safeName}</b>,
               </p>
               <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 22px; color: #475569;">
                 Welcome to <b>ResumeCraft</b>. You're just one step away from building recruiter-ready, ATS-optimized resumes. Please enter the verification code below to activate your account:
@@ -337,8 +347,8 @@ app.post(['/api/auth/verify-otp', '/auth/verify-otp'], async (req, res) => {
 app.post(['/api/auth/resend-otp', '/auth/resend-otp'], async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({ message: 'Please provide your email address' });
+    if (!email || typeof email !== 'string') {
+      return res.status(400).json({ message: 'Please provide a valid email address' });
     }
 
     const cleanEmail = email.toLowerCase().trim();
@@ -350,6 +360,17 @@ app.post(['/api/auth/resend-otp', '/auth/resend-otp'], async (req, res) => {
 
     if (user.isVerified) {
       return res.status(400).json({ message: 'Your account is already verified. Please sign in.' });
+    }
+
+    // Rate Limit Guard: 60s cooldown to protect Brevo daily email quota from abuse
+    if (user.otpExpires) {
+      const timeLeft = user.otpExpires.getTime() - Date.now();
+      if (timeLeft > 9 * 60 * 1000) {
+        const waitSec = Math.ceil((timeLeft - 9 * 60 * 1000) / 1000);
+        return res.status(429).json({
+          message: `Please wait ${waitSec}s before requesting a new verification code.`
+        });
+      }
     }
 
     const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -372,8 +393,8 @@ app.post(['/api/auth/resend-otp', '/auth/resend-otp'], async (req, res) => {
 app.post(['/api/auth/login', '/auth/login'], async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Please provide email and password' });
+    if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ message: 'Please provide valid email and password' });
     }
     const cleanEmail = email.toLowerCase().trim();
     const user = await User.findOne({ email: cleanEmail });
