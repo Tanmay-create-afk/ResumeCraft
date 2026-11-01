@@ -233,6 +233,7 @@ export default function Dashboard() {
   }, [resumes, activeResumeId, searchTerm, selectedFilter]);
 
   const activeDoc = resumes.find(r => r.id === activeResumeId) || resumes[0];
+  const totalRecruiterViews = resumes.reduce((acc, r) => acc + (r.viewsCount || 0), 0);
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] bg-[#f8faff] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] text-slate-800 font-jakarta p-4 sm:p-8 lg:p-12 overflow-hidden">
@@ -334,11 +335,11 @@ export default function Dashboard() {
 
           <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200/90 shadow-2xs flex items-center gap-3.5">
             <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-              <Layers className="w-5 h-5" />
+              <Eye className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Export Standard</p>
-              <p className="text-sm font-extrabold text-slate-900 mt-0.5">300 DPI Vector PDF</p>
+              <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Recruiter Views</p>
+              <p className="text-lg font-extrabold text-slate-900 mt-0.5">{totalRecruiterViews} {totalRecruiterViews === 1 ? 'View' : 'Views'}</p>
             </div>
           </div>
         </div>
@@ -415,17 +416,26 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   {/* Top Bar: Active Status & Action Toolbar */}
                   <div className="flex items-center justify-between gap-2">
-                    {isActive ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/90 shadow-2xs">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span>Active in Studio</span>
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200/80">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                        <span>Draft Version</span>
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {isActive ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/90 shadow-2xs">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <span>Active in Studio</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200/80">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                          <span>Draft Version</span>
+                        </span>
+                      )}
+
+                      {r.isPublic && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80" title="Total times opened via public share link">
+                          <Eye className="w-3 h-3 text-indigo-600" />
+                          <span>{r.viewsCount || 0} views</span>
+                        </span>
+                      )}
+                    </div>
 
                     {/* Toolbar icons */}
                     <div className="flex items-center gap-1 text-slate-400">

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FileText, Sparkles, LayoutDashboard, Compass, LogIn, LogOut, X, ZoomIn, Menu } from 'lucide-react';
+import { FileText, Sparkles, LayoutDashboard, Compass, LogIn, LogOut, X, ZoomIn, Menu, ShieldCheck, Settings } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import AccountSettingsModal from './AccountSettingsModal';
 
 export default function Navbar() {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [showLogoModal, setShowLogoModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showAccountModal, setShowAccountModal] = useState(false);
 
   const navLinks = [
     { name: 'Templates', path: '/', icon: Compass },
@@ -96,14 +98,20 @@ export default function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3 z-10">
           {user ? (
             <div className="hidden sm:flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700">
-                <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold">
+              <button
+                type="button"
+                onClick={() => setShowAccountModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-xs font-semibold text-slate-700 transition-all cursor-pointer shadow-2xs group"
+                title="Account & Security Settings"
+              >
+                <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold group-hover:scale-105 transition-transform">
                   {(user.name || user.email || 'U')[0].toUpperCase()}
                 </span>
-                <span className="max-w-[100px] truncate hidden sm:inline">
+                <span className="max-w-[100px] truncate hidden sm:inline font-bold">
                   {user.name || user.email.split('@')[0]}
                 </span>
-              </div>
+                <Settings className="w-3 h-3 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+              </button>
               <button
                 type="button"
                 onClick={logout}
@@ -233,6 +241,11 @@ export default function Navbar() {
           </div>
         </div>
       )}
+      {/* Account & Security Settings Modal */}
+      <AccountSettingsModal
+        isOpen={showAccountModal}
+        onClose={() => setShowAccountModal(false)}
+      />
     </>
   );
 }
